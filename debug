@@ -1,0 +1,24 @@
+#!/bin/bash
+
+
+WHAT_TO_RUN=app
+
+
+if [ $# -eq 1 ]; then
+    WHAT_TO_RUN=$1
+fi
+
+
+SCRIPT_DIR=$(readlink -m $(dirname $0))
+
+$SCRIPT_DIR/require $WHAT_TO_RUN
+
+
+if [ $? -eq 0 ]; then
+    lldb $SCRIPT_DIR/out/bin/a.out.$WHAT_TO_RUN
+else
+    echo "Could not find $WHAT_TO_RUN; have you successfully built?"
+    echo
+    exit 1
+fi
+

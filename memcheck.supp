@@ -1,0 +1,9 @@
+{
+    reachable-exception-global-state
+    Memcheck:Leak
+    match-leak-kinds: reachable
+    ...
+    fun:__cxa_get_globals
+    ...
+}
+

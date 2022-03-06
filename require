@@ -1,0 +1,12 @@
+#!/bin/bash
+
+
+SCRIPT_DIR=$(readlink -m $(dirname $0))
+
+
+if [ -e $SCRIPT_DIR/out/bin/a.out.$1 ]; then
+    exit 0
+else
+    exit 1
+fi
+

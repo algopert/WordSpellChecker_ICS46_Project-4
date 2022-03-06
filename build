@@ -1,0 +1,37 @@
+#!/bin/bash
+
+
+SCRIPT_DIR=$(readlink -m $(dirname $0))
+OUT_DIR=$SCRIPT_DIR/out
+
+
+if [ $# -lt 1 ]; then
+    WHAT_TO_MAKE=
+elif [ "$1" == "all" ]; then
+    WHAT_TO_MAKE=
+elif [ "$1" == "app" ]; then
+    WHAT_TO_MAKE=a.out.app
+elif [ "$1" == "exp" ]; then
+    WHAT_TO_MAKE=a.out.exp
+elif [ "$1" == "gtest" ]; then
+    WHAT_TO_MAKE=a.out.gtest
+else
+    echo "Must build either 'app', 'exp', 'gtest', or 'all'"
+    echo
+    exit 1
+fi
+
+
+if [ ! -e $OUT_DIR ]; then
+    mkdir $OUT_DIR
+fi
+
+
+cd $OUT_DIR
+cmake $SCRIPT_DIR
+
+
+if [ $? -eq 0 ]; then
+    make $WHAT_TO_MAKE
+fi
+

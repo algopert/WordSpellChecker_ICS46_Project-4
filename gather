@@ -1,0 +1,72 @@
+#!/bin/bash
+
+
+set -e
+
+
+SCRIPT_DIR=$(readlink -m $(dirname $0))
+TEMPLATE_NAME=$(cat $SCRIPT_DIR/.template)
+TARGZ_PATH=$SCRIPT_DIR/$TEMPLATE_NAME.tar.gz
+
+
+if [ ! -e $SCRIPT_DIR/out/bin/a.out.app ]; then
+    echo "WARNING: It looks like this project has not been built successfully"
+    echo "since it was last changed.  Your best bet is to run this command"
+    echo "to make sure it builds successfully before submitting your project:"
+    echo
+    echo "    ./build"
+    echo
+    echo "But if you know that your program does not build successfully"
+    echo "and you still want to gather your files, that's fine.  Just be"
+    echo "sure you're aware of the problem."
+    echo
+    echo
+fi
+
+
+echo "Gathering your source and header files for submission..."
+
+cd $SCRIPT_DIR
+
+
+TEMP_DIR=$(mktemp -d)
+trap cleanup exit
+
+function cleanup()
+{
+    if [ -e $TEMP_DIR ]; then
+        rm -rf $TEMP_DIR
+    fi
+}
+
+
+cp -r $SCRIPT_DIR/app $TEMP_DIR
+cp -r $SCRIPT_DIR/core $TEMP_DIR
+cp -r $SCRIPT_DIR/exp $TEMP_DIR
+cp -r $SCRIPT_DIR/gtest $TEMP_DIR
+
+
+if [ -e $SCRIPT_DIR/.template ]; then
+    cp $SCRIPT_DIR/.template $TEMP_DIR
+fi
+
+
+# Delete everything but header and source files, and also
+# delete any files larger than 128KB, which are extremely
+# unlikely to be files that students should be submitting.
+find $TEMP_DIR -type f -not \( -name '*.cpp' -or -name '*.hpp' \) -delete
+find $TEMP_DIR -type f -size +128k -delete
+find $TEMP_DIR -type d -empty -delete
+
+
+# Grab everything that's left
+cd $TEMP_DIR
+tar cvfz $TARGZ_PATH *
+
+echo
+echo "Take note of the list of files above.  Those are the only ones"
+echo "that have been gathered.  Note that only files with names ending"
+echo "in .hpp or .cpp within the app/, core/, exp/, and gtest/"
+echo "directories are gathered.  Additionally, no files larger than"
+echo "128KB are gathered, regardless of their names."
+

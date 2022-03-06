@@ -1,0 +1,10 @@
+#!/bin/bash
+
+
+SCRIPT_DIR=$(readlink -m $(dirname $0))
+
+
+if [ -e $SCRIPT_DIR/out ]; then
+    rm -rf $SCRIPT_DIR/out
+fi
+
